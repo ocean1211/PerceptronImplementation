@@ -16,24 +16,25 @@ def recalc(k):
 	b.append(b[k] + y[k])
 
 def determine(j):
-	yi = np.dot(w[j], x[j]) + b[j]
-
-	if (yi < 0 and y[j] < 0) or (yi > 0 and y[j] > 0):
+	yi = -y[j] * np.dot(w[j], x[j]) + b[j]
+	print "f(w, b)(x) calculation: ", yi
+	if yi > 0:
 		return True
 	else:
 		return False
 
 def perceptron():
 	print "\n"
-	for i in range(len(x)):
+	for i in range(len(x) - 20):
 		reweight = determine(i)
-		if not reweight:
+		if reweight:
 			recalc(i)
 		else:
 			w.append(w[i])
 			b.append(b[i])
 
-		print reweight
+		print "interation: ", i
+		print "reweight:", reweight
 		print "x", x[i]
 		print "y", y[i]
 		print "w", w[i]
@@ -53,3 +54,27 @@ print "done stripping text"
 
 print "starting perceptron algorithm ..."
 perceptron()
+
+print "done training"
+
+numoftrue = 0
+numoffalse = 0
+
+#i = 80
+for i in range(80, 99):
+ 	w.append(w[i])
+	b.append(b[i])
+	print x[i], "\n\n"
+	result = determine(i)
+	print result
+	if result:
+		numoftrue += 1
+	else:
+		numoffalse += 1
+
+print numoffalse, numoftrue
+
+
+
+
+
