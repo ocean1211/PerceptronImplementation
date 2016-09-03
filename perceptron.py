@@ -16,12 +16,13 @@ def recalc(k):
 	b.append(b[k] + y[k])
 
 def determine(j):
-	yi = -y[j] * np.dot(w[j], x[j]) + b[j]
-	print "f(w, b)(x) calculation: ", yi
-	if yi > 0:
-		return True
-	else:
+	# removing the negative makes it more reasonable but is it right?
+	result = y[j] * np.dot(w[j], x[j]) + b[j]
+	print "f(w, b)(x) calculation: ", result
+	if result > 0:
 		return False
+	else:
+		return True
 
 def perceptron():
 	print "\n"
@@ -61,19 +62,20 @@ numoftrue = 0
 numoffalse = 0
 
 #i = 80
-for i in range(80, 99):
+for i in range(80, 100):
+	print "test: ", i
  	w.append(w[i])
 	b.append(b[i])
-	print x[i], "\n\n"
+	print x[i]
 	result = determine(i)
-	print result
+	print "result", result, "\n\n"
 	if result:
 		numoftrue += 1
 	else:
 		numoffalse += 1
 
 print numoffalse, numoftrue
-
+print "percentage correctly classified: ", 100 * (numoffalse / 20), "%"
 
 
 
