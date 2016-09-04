@@ -1,25 +1,34 @@
 import os
 import numpy as np
+import random
 
 x = []
 y = []
 w = [(0, 0, 0, 0)]
 b = [0]
 
-stepsize = 1
+stepsize = .00000000000001
 convergeiteration = 0
 
-def recalc(k):
-	w1 = w[k][0] + stepsize * x[k][0] * y[k] 
-	w2 = w[k][1] + stepsize * x[k][1] * y[k] 
-	w3 = w[k][2] + stepsize * x[k][2] * y[k] 
-	w4 = w[k][3] + stepsize * x[k][3] * y[k] 
-	w.append((w1, w2, w3, w4))
-	b.append(b[k] + stepsize * y[k])
 
-def determine(j):
+randarray = random.sample(range(100), 100)
+
+testrand = randarray[80:]
+print randarray
+print testrand, "\n"
+
+
+def recalc(k, i):
+	w1 = w[i][0] + stepsize * x[k][0] * y[k] 
+	w2 = w[i][1] + stepsize * x[k][1] * y[k] 
+	w3 = w[i][2] + stepsize * x[k][2] * y[k] 
+	w4 = w[i][3] + stepsize * x[k][3] * y[k] 
+	w.append((w1, w2, w3, w4))
+	b.append(b[i] + stepsize * y[k])
+
+def determine(j, i):
 	# removing the negative makes it more reasonable but is it right?
-	result = y[j] * np.dot(w[j], x[j]) + b[j]
+	result = y[j] * np.dot(w[i], x[j]) + b[i]
 	print "f(w, b)(x) calculation: ", result
 	if result > 0:
 		return False
@@ -29,9 +38,10 @@ def determine(j):
 def perceptron():
 	print "\n"
 	for i in range(len(x) - 20):
-		reweight = determine(i)
+		print i
+		reweight = determine(randarray[i], i)
 		if reweight:
-			recalc(i)
+			recalc(randarray[i], i)
 			global convergeiteration
 			convergeiteration = i
 		else:
@@ -40,8 +50,8 @@ def perceptron():
 
 		print "interation: ", i
 		print "reweight:", reweight
-		print "x", x[i]
-		print "y", y[i]
+		print "x", x[randarray[i]]
+		print "y", y[randarray[i]]
 		print "w", w[i]
 		print "b", b[i]
 		print "\n\n"
@@ -66,12 +76,12 @@ numoftrue = 0
 numoffalse = 0
 
 #i = 80
-for i in range(80, 100):
+for i in range(20):
 	print "test: ", i
  	w.append(w[i])
 	b.append(b[i])
 	print x[i]
-	result = determine(i)
+	result = determine(testrand[i], i)
 	print "result", result, "\n\n"
 	if result:
 		numoftrue += 1
