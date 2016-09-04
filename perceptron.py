@@ -6,14 +6,16 @@ y = []
 w = [(0, 0, 0, 0)]
 b = [0]
 
+stepsize = 1
+convergeiteration = 0
 
 def recalc(k):
-	w1 = w[k][0] + x[k][0] * y[k] 
-	w2 = w[k][1] + x[k][1] * y[k] 
-	w3 = w[k][2] + x[k][2] * y[k] 
-	w4 = w[k][3] + x[k][3] * y[k] 
+	w1 = w[k][0] + stepsize * x[k][0] * y[k] 
+	w2 = w[k][1] + stepsize * x[k][1] * y[k] 
+	w3 = w[k][2] + stepsize * x[k][2] * y[k] 
+	w4 = w[k][3] + stepsize * x[k][3] * y[k] 
 	w.append((w1, w2, w3, w4))
-	b.append(b[k] + y[k])
+	b.append(b[k] + stepsize * y[k])
 
 def determine(j):
 	# removing the negative makes it more reasonable but is it right?
@@ -30,6 +32,8 @@ def perceptron():
 		reweight = determine(i)
 		if reweight:
 			recalc(i)
+			global convergeiteration
+			convergeiteration = i
 		else:
 			w.append(w[i])
 			b.append(b[i])
@@ -75,7 +79,8 @@ for i in range(80, 100):
 		numoffalse += 1
 
 print numoffalse, numoftrue
-print "percentage correctly classified: ", 100 * (numoffalse / 20), "%"
+print "percentage correctly classified: ", 100.00 * (numoffalse / 20.00), "%"
+print "converged at: ", convergeiteration, "\n"
 
 
 
