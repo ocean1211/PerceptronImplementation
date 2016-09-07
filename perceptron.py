@@ -1,34 +1,60 @@
 import os
 import numpy as np
+from time import sleep
+
+unit_step = lambda x: 0 if x < 0 else 1 
+stochastic = 0
+
 
 x = []
 y = []
-w = [(0, 0, 0, 0)]
-b = [0]
+w = [(0, 0, 0, 0)] * 100
+b = [0] * 100
 
 stepsize = 1
 convergeiteration = 0
+endsum = [0, 0, 0, 0]
 
 def recalc(k):
-	w1 = w[k][0] + stepsize * x[k][0] * y[k] 
-	w2 = w[k][1] + stepsize * x[k][1] * y[k] 
-	w3 = w[k][2] + stepsize * x[k][2] * y[k] 
-	w4 = w[k][3] + stepsize * x[k][3] * y[k] 
-	w.append((w1, w2, w3, w4))
-	b.append(b[k] + stepsize * y[k])
+	if stochastic: 
+		w1 = w[k][0] + (stepsize * x[k][0] * y[k]) 
+		w2 = w[k][1] + (stepsize * x[k][1] * y[k])
+		w3 = w[k][2] + (stepsize * x[k][2] * y[k])
+		w4 = w[k][3] + (stepsize * x[k][3] * y[k]) 
+
+		w.append((w1, w2, w3, w4))
+		b.append(b[k] + stepsize * y[k])
+	else:
+		global endsum
+		minorsum = [i * y[k] for i in x[k]]
+		print minorsum 
+
+		for i in range(4):
+			endsum[i] = endsum[i] + minorsum[i]
+		print endsum
+
+		if k == 99:
+			w1 = w[k][0] + endsum[0]
+			w2 = w[k][1] + endsum[1]
+			w3 = w[k][2] + endsum[2]
+			w4 = w[k][3] + endsum[3]
+
+			global w
+			w = [(w1, w2, w3, w4)] * 100
+			print w[1]
 
 def determine(j):
 	# removing the negative makes it more reasonable but is it right?
-	result = y[j] * np.dot(w[j], x[j]) + b[j]
+	result = (np.dot(w[j], x[j]) + b[j])
 	print "f(w, b)(x) calculation: ", result
-	if result > 0:
-		return False
-	else:
+	if result * y[j] <= 0:
 		return True
+	else:
+		return False
 
 def perceptron():
 	print "\n"
-	for i in range(len(x) - 20):
+	for i in range(len(x)):
 		reweight = determine(i)
 		if reweight:
 			recalc(i)
@@ -38,6 +64,7 @@ def perceptron():
 			w.append(w[i])
 			b.append(b[i])
 
+		print "convergence: ", convergeiteration
 		print "interation: ", i
 		print "reweight:", reweight
 		print "x", x[i]
@@ -58,8 +85,11 @@ with open('perceptron.data') as openfileobject:
 print "done stripping text"
 
 print "starting perceptron algorithm ..."
-perceptron()
+while 1:
+	perceptron()
+	sleep(2)
 
+'''
 print "done training"
 
 numoftrue = 0
@@ -82,6 +112,6 @@ print numoffalse, numoftrue
 print "percentage correctly classified: ", 100.00 * (numoffalse / 20.00), "%"
 print "converged at: ", convergeiteration, "\n"
 
-
+'''
 
 
