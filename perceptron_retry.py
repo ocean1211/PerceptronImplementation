@@ -1,4 +1,4 @@
-import os
+import os, sys
 import numpy as np
 from time import sleep
 
@@ -15,6 +15,36 @@ stepsize = 1
 done = 1
 count = 0
 inter_count = 0
+
+
+def stochastic_perceptron():
+	global w
+	global b
+	global inter_count
+	global delta
+	global deltab
+
+	global w
+	global b
+	global inter_count
+	global delta
+	global deltab
+
+	for i in range(100):
+		ui = np.dot(w, x[i]) + b
+
+		if y[i] * ui <= 0:
+			inter_count += 1
+			for j in range(4):
+				w[j] = w[j] -  (stepsize * (delta[j] - (y[i] * x[i][j])))
+
+	if inter_count == 0:
+		global done
+		done = 0
+
+	print inter_count
+	inter_count = 0
+
 
 def perceptron():
 	global w
@@ -50,7 +80,6 @@ def perceptron():
 	inter_count = 0
 
 
-
 with open('perceptron.data') as openfileobject:
     for line in openfileobject:
     	print line
@@ -62,9 +91,16 @@ print "done stripping text"
 
 print "starting perceptron algorithm ..."
 
-while done == 1:
-	perceptron()
-	#sleep(2)
-	count += 1
+if sys.argv[1] == "stochastic":
+	while done == 1:
+		stochastic_perceptron()
+		#sleep(2)
+		count += 1
+else:
+	while done == 1:
+		perceptron()
+		#sleep(2)
+		count += 1
+
 
 print "count: ", count
