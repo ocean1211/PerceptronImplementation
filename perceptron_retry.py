@@ -30,7 +30,7 @@ def stochastic_perceptron():
 	global delta
 	global deltab
 
-	for i in range(100):
+	for i in range(2):
 		ui = np.dot(w, x[i]) + b
 
 		if y[i] * ui <= 0:
@@ -38,9 +38,13 @@ def stochastic_perceptron():
 			for j in range(4):
 				w[j] = w[j] -  (stepsize * (delta[j] - (y[i] * x[i][j])))
 
+	print "w: ", w
+	print "b: ", b
 	if inter_count == 0:
 		global done
 		done = 0
+		print "w: ", w
+		print "b: ", b
 
 	print inter_count
 	inter_count = 0
@@ -53,7 +57,7 @@ def perceptron():
 	global delta
 	global deltab
 
-	for i in range(100):
+	for i in range(2):
 		ui = np.dot(w, x[i]) + b
 
 		if y[i] * ui <= 0:
@@ -63,9 +67,9 @@ def perceptron():
 				delta[j] = updelta
 				deltab += y[i]
 
-		if i == 99:
+		if i == 1:
 			for k in range(4):
-				w[k] = w[k] - stepsize * delta[k]/4
+				w[k] = w[k] - (stepsize * delta[k] / 4)
 			b = stepsize * deltab
 			print "w: ", w
 			print "b: ", b
@@ -80,12 +84,14 @@ def perceptron():
 	inter_count = 0
 
 
-with open('perceptron.data') as openfileobject:
+with open('perceptron_copy.data') as openfileobject:
     for line in openfileobject:
-    	print line
-    	array = [int(var) for var in line.split(',')]
+    	#print line
+    	array = [float(var) for var in line.split(',')]
     	x.append(tuple(array[0:4]))
     	y.append(array[4])
+
+    stepsize = float(sys.argv[2])
 
 print "done stripping text"
 
